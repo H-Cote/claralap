@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClaraLap | Tu laptop ideal, sin complicaciones</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #003366; /* Azul oscuro del logo */
+            --primary-light: #00cccc; /* Cyan del logo */
+            --bg-color: #f4f7fb;
+            --white: #ffffff;
+            --text-dark: #333333;
+            --text-light: #666666;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        nav {
+            background-color: var(--white);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-container img {
+            height: 40px;
+        }
+
+        .nav-links a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .nav-links a.active {
+            color: var(--primary-dark);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 5px;
+        }
+
+        /* --- MAIN LAYOUT --- */
+        main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            padding: 20px 40px;
+            gap: 20px;
+        }
+
+        /* --- CHAT SECTION (Left) --- */
+        .chat-section {
+            flex: 2;
+            background: var(--white);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-light);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 15px;
+            line-height: 1.5;
+        }
+
+        .message.bot {
+            background-color: #f0f4f8;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+        }
+
+        .message.user {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+
+        .chat-input {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .chat-input button {
+            background: var(--primary-light);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- RESULTS SECTION (Inside Chat) --- */
+        .results-container {
+            display: none;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+
+        .cards-wrapper {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .laptop-card {
+            background: var(--white);
+            border: 1px solid #eee;
+            border-radius: 15px;
+            padding: 15px;
+            flex: 1;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .laptop-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .laptop-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 10px 0 5px 0;
+        }
+
+        .laptop-savings {
+            color: #28a745;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: #e6f4ea;
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        /* --- SIDEBAR EXPLANATION (Right) --- */
+        .explanation-sidebar {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary-dark), #001f40);
+            border-radius: 20px;
+            color: var(--white);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .explanation-sidebar h3 {
+            margin-top: 0;
+            font-weight: 600;
+        }
+
+        .benefit-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            flex: 1;
+        }
+
+        .benefit-list li {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="logo-container">
+            <img src="logo_1.png" alt="ClaraLap Logo">
+        </div>
+        <div class="nav-links">
+            <a href="#" class="active">Inicio</a>
+            <a href="#">Cómo funciona</a>
+            <a href="#">Tecnología</a>
+        </div>
+        <div>Mi cuenta</div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        
+        <!-- CHAT AREA -->
+        <section class="chat-section">
+            <div class="chat-header">
+                <div style="background:#ddd; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px;">👩‍💻</div>
+                <div>
+                    <strong style="display:block;">Clara</strong>
+                    <span style="font-size:0.8rem; color:var(--text-light);">Tu asistente de laptops</span>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">
+                    ¡Hola! Soy Clara, tu asistente de laptops.<br><br>
+                    Para recomendarte las mejores opciones, cuéntame:<br>
+                    ¿Qué vas a hacer principalmente con tu laptop y cuál es tu presupuesto? (Por ejemplo: estudiar arquitectura, jugar, presupuesto $20,000 MXN).
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="user-input" placeholder="Escribe tu mensaje..." onkeypress="if(event.key === 'Enter') sendQuery()">
+                <button onclick="sendQuery()">➤</button>
+            </div>
+        </section>
+
+        <!-- EXPLANATION SIDEBAR -->
+        <section class="explanation-sidebar" id="sidebar">
+            <h3>¿Por qué estas laptops son ideales para ti?</h3>
+            <ul class="benefit-list" id="benefit-list">
+                <li>
+                    Escribe tus necesidades en el chat y yo me encargaré de encontrar el hardware perfecto para ti.
+                </li>
+            </ul>
+        </section>
+
+    </main>
+
+    <script>
+        // Función para enviar la consulta a la API de FastAPI
+        async function sendQuery() {
+            const inputField = document.getElementById('user-input');
+            const userText = inputField.value.trim();
+            if (!userText) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+
+            // 1. Mostrar mensaje del usuario
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.textContent = userText;
+            chatMessages.appendChild(userMsg);
+            inputField.value = '';
+
+            // 2. Mostrar "Escribiendo..."
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'message bot';
+            loadingMsg.textContent = 'Analizando inventario y calculando precios justos...';
+            chatMessages.appendChild(loadingMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                // 3. Llamada a tu API (FastAPI en Vercel)
+                const response = await fetch('/api/v1/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensaje: userText })
+                });
+
+                const data = await response.json();
+                chatMessages.removeChild(loadingMsg);
+
+                // 4. Mostrar respuesta del Bot
+                const botMsg = document.createElement('div');
+                botMsg.className = 'message bot';
+                botMsg.innerHTML = `¡Perfecto! Encontré 3 laptops que se ajustan a lo que necesitas para <strong>${data.requerimientos.resumen_uso || 'tus tareas'}</strong>.`;
+                chatMessages.appendChild(botMsg);
+
+                // 5. Renderizar las Tarjetas (Gangas)
+                if (data.recomendaciones && data.recomendaciones.length > 0) {
+                    const resultsContainer = document.createElement('div');
+                    resultsContainer.className = 'results-container';
+                    resultsContainer.style.display = 'block';
+                    
+                    let cardsHTML = `<h4>✨ Tus 3 mejores recomendaciones</h4><div class="cards-wrapper">`;
+                    
+                    data.recomendaciones.forEach((laptop, index) => {
+                        const ahorro = laptop.Diferencia_MXN < 0 ? Math.abs(laptop.Diferencia_MXN) : 0;
+                        const ahorroBadge = ahorro > 0 ? `<div class="laptop-savings">Ahorras $${ahorro.toLocaleString()} MXN</div>` : `<div style="font-size:0.8rem; color:#666;">Precio Justo</div>`;
+                        
+                        cardsHTML += `
+                            <div class="laptop-card">
+                                <div style="background:#eee; height:100px; border-radius:10px; margin-bottom:10px; display:flex; align-items:center; justify-content:center; color:#999;">[Imagen]</div>
+                                <div style="font-size:0.9rem; font-weight:600;">${laptop.Marca}</div>
+                                <div style="font-size:0.75rem; color:#666; height:35px; overflow:hidden;">${laptop.Nombre}</div>
+                                <div class="laptop-price">$${laptop.Precio_MXN.toLocaleString()}</div>
+                                ${ahorroBadge}
+                            </div>
+                        `;
+                    });
+                    
+                    cardsHTML += `</div>`;
+                    resultsContainer.innerHTML = cardsHTML;
+                    chatMessages.appendChild(resultsContainer);
+                }
+
+                // 6. Actualizar el Sidebar Lateral (Explicación de OpenAI)
+                const sidebarList = document.getElementById('benefit-list');
+                sidebarList.innerHTML = `<li>${data.explicacion.replace(/\n/g, '<br><br>')}</li>`;
+
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            } catch (error) {
+                chatMessages.removeChild(loadingMsg);
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'message bot';
+                errorMsg.style.color = 'red';
+                errorMsg.textContent = 'Hubo un error al conectar con el servidor. Revisa tu conexión o la API Key.';
+                chatMessages.appendChild(errorMsg);
+            }
+        }
+    </script>
+</body>
+</html>
