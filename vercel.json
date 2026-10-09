@@ -13,18 +13,10 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/backend/app/main.py"
-    },
-    {
-      "src": "/logo_1.png",
-      "dest": "/logo_1.png"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/api/(.*)",
+      "destination": "/backend/app/main.py"
     }
   ]
 }
