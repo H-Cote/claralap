@@ -314,8 +314,8 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
-                // 3. Llamada a tu API (FastAPI en Vercel)
-                const response = await fetch('/api/v1/chat', {
+                // 3. Llamada a tu API (FastAPI en Render)
+                const response = await fetch('https://claralap-api.onrender.com/api/v1/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ mensaje: userText })

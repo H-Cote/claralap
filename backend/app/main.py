@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pandas as pd
 import json
@@ -6,7 +7,17 @@ import os
 from openai import OpenAI
 
 app = FastAPI(title="ClaraLap API")
-client = OpenAI(api_key=os.getenv("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"))
+
+# Habilitar CORS para permitir peticiones desde Vercel
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Cargar el catálogo al iniciar el servidor
 CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "catalogo_enriquecido.csv")
@@ -49,5 +60,5 @@ def procesar_consulta(payload: ChatRequest):
     return {
         "requerimientos": reqs,
         "recomendaciones": laptops,
-        "mensaje_asesor": resp_texto.choices[0].message.content
+        "explicacion": resp_texto.choices[0].message.content  # Mismo nombre que espera tu HTML
     }
