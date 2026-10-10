@@ -130,9 +130,24 @@ def procesar_consulta(payload: ChatRequest):
     if top_laptops_df.empty:
         return {"recomendaciones": [], "explicacion": "No encontré equipos con esos requisitos. ¿Podríamos ajustar un poco el presupuesto?"}
 
-    columnas = ["Marca", "Nombre", "Precio_MXN", "Precio_Justo_Modelo", "Diferencia_MXN"]
+    # Columnas a enviar al frontend (se incluye URL_Producto y especificaciones)
+    columnas = [
+        "Marca", "Nombre", "Precio_MXN", "Precio_Justo_Modelo", "Diferencia_MXN", 
+        "URL_Producto", "RAM_GB", "Almacenamiento_GB", "Gama_Tecnica", "Imagen_URL"
+    ]
     cols_existentes = [col for col in columnas if col in top_laptops_df.columns]
-    laptops = top_laptops_df[cols_existentes].fillna("").to_dict(orient="records")
+    
+    df_resp = top_laptops_df[cols_existentes].copy()
+
+    # Fallback de seguridad: Si la URL_Producto no existe o está vacía, genera un enlace de búsqueda
+    if "URL_Producto" in df_resp.columns:
+        df_resp["URL_Producto"] = df_resp.apply(
+            lambda row: row["URL_Producto"] if pd.notna(row["URL_Producto"]) and str(row["URL_Producto"]).strip() != ""
+            else f"https://www.google.com/search?q={str(row.get('Nombre', 'laptop')).replace(' ', '+')}",
+            axis=1
+        )
+
+    laptops = df_resp.fillna("").to_dict(orient="records")
 
     sys_prompt_empatico = """Eres ClaraLap. Dile al usuario que encontraste opciones ideales.
     REGLAS: Máximo 2 oraciones. CERO asteriscos. Sin mencionar especificaciones técnicas detalladas.

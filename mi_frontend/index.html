@@ -129,7 +129,27 @@
         .slider-btn.left { left: 5px; }
         .slider-btn.right { right: 5px; }
 
-        /* --- ADAPTACIÓN RESPONSIVA PARA CELULARES Y TABLETAS --- */
+        /* Estilo para botón de compra */
+        .btn-comprar {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            background: var(--primary-blue);
+            color: white !important;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 10px;
+            box-sizing: border-box;
+            transition: background 0.2s;
+        }
+        .btn-comprar:hover {
+            background: #004085;
+        }
+
+        /* --- ADAPTACIÓN RESPONSIVA --- */
         @media (max-width: 768px) {
             body { 
                 height: auto; 
@@ -138,13 +158,8 @@
                 overflow-y: auto; 
             }
 
-            nav { 
-                padding: 12px 20px; 
-            }
-
-            .nav-links { 
-                display: none; /* Oculta enlaces secundarios en celulares para no saturar el encabezado */
-            }
+            nav { padding: 12px 20px; }
+            .nav-links { display: none; }
 
             main { 
                 flex-direction: column; 
@@ -162,18 +177,9 @@
                 box-sizing: border-box; 
             }
 
-            .chat-messages {
-                padding: 15px;
-            }
-
-            .chat-input-area {
-                padding: 15px;
-            }
-
-            .helper-text {
-                margin-left: 0;
-                text-align: center;
-            }
+            .chat-messages { padding: 15px; }
+            .chat-input-area { padding: 15px; }
+            .helper-text { margin-left: 0; text-align: center; }
 
             .visual-column { 
                 flex: none; 
@@ -185,10 +191,7 @@
                 border-radius: 20px;
             }
 
-            .glass-panel, .slider-panel { 
-                max-width: 100%; 
-                width: 100%; 
-            }
+            .glass-panel, .slider-panel { max-width: 100%; width: 100%; }
         }
     </style>
     <!-- PRECARGA DE IMÁGENES (.jpeg) -->
@@ -208,7 +211,6 @@
             </div>
             <div class="user-controls" style="display: flex; gap: 15px; align-items: center;">
                 <button style="border: 1px solid #ddd; background: white; border-radius: 20px; padding: 5px 12px; cursor: pointer;">☀️ 🌙</button>
-                <div style="display: flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer;">
             </div>
         </nav>
     </header>
@@ -327,7 +329,7 @@
                     </div>
                 `;
 
-                // CASO A: Evaluación de una oferta específica del usuario
+                // CASO A: Evaluación de oferta
                 if (data.evaluacion_oferta) {
                     const evalData = data.evaluacion_oferta;
                     
@@ -351,7 +353,7 @@
                         </div>
                     `;
                 } 
-                // CASO B: Recomendación de catálogo
+                // CASO B: Recomendaciones del catálogo
                 else if (data.recomendaciones && data.recomendaciones.length > 0) {
                     changeClaraImage('clara_alegria.jpeg');
                     
@@ -381,20 +383,35 @@
                         const precioFinal = Math.round(laptop.Precio_MXN);
                         const precioOriginal = Math.round(precioFinal + ahorro);
                         
+                        // Generar URL válida a la tienda
+                        const urlCompra = (laptop.URL_Producto && laptop.URL_Producto.trim() !== '') 
+                            ? laptop.URL_Producto 
+                            : `https://www.google.com/search?q=${encodeURIComponent(laptop.Marca + ' ' + laptop.Nombre)}`;
+
                         cardsHTML += `
-                            <div style="flex: 1; min-width: 200px; border: 1px solid #eee; border-radius: 15px; padding: 15px; position: relative; flex-shrink: 0;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                                    <span style="background: var(--primary-blue); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; font-weight: bold;">${index + 1}</span>
-                                    <span style="background: var(--light-blue); color: var(--primary-blue); padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 600;">Recomendada</span>
+                            <div style="flex: 1; min-width: 200px; border: 1px solid #eee; border-radius: 15px; padding: 15px; position: relative; flex-shrink: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                        <span style="background: var(--primary-blue); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; font-weight: bold;">${index + 1}</span>
+                                        <span style="background: var(--light-blue); color: var(--primary-blue); padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 600;">Recomendada</span>
+                                    </div>
+                                    
+                                    <a href="${urlCompra}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                                        <div style="height: 110px; background: url('${laptop.Imagen_URL || 'https://cdn-icons-png.flaticon.com/512/3333/3333182.png'}') center/contain no-repeat; opacity: 0.85; margin-bottom: 15px;"></div>
+                                        <h5 style="margin: 0 0 4px 0; font-size: 0.9rem; color: #003366;">${laptop.Marca}</h5>
+                                        <p style="margin: 0 0 12px 0; font-size: 0.75rem; color: #555; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${laptop.Nombre}</p>
+                                    </a>
+
+                                    <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px;">
+                                        <span style="font-size: 1.1rem; font-weight: 700; color: #003366;">$${precioFinal.toLocaleString()} MXN</span>
+                                        ${ahorro > 0 ? `<span style="font-size: 0.75rem; color: #999; text-decoration: line-through;">$${precioOriginal.toLocaleString()}</span>` : ''}
+                                    </div>
+                                    ${ahorro > 0 ? `<div style="font-size: 0.75rem; color: #28a745; font-weight: 600; margin-bottom: 8px;">Ahorras $${ahorro.toLocaleString()} MXN</div>` : ''}
                                 </div>
-                                <div style="height: 110px; background: url('https://cdn-icons-png.flaticon.com/512/3333/3333182.png') center/contain no-repeat; opacity: 0.7; margin-bottom: 15px;"></div>
-                                <h5 style="margin: 0 0 4px 0; font-size: 0.9rem; color: #333;">${laptop.Marca}</h5>
-                                <p style="margin: 0 0 12px 0; font-size: 0.75rem; color: #777; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${laptop.Nombre}</p>
-                                <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px;">
-                                    <span style="font-size: 1.1rem; font-weight: 700; color: #003366;">$${precioFinal.toLocaleString()}</span>
-                                    ${ahorro > 0 ? `<span style="font-size: 0.75rem; color: #999; text-decoration: line-through;">$${precioOriginal.toLocaleString()}</span>` : ''}
-                                </div>
-                                ${ahorro > 0 ? `<div style="font-size: 0.75rem; color: #28a745; font-weight: 600;">Ahorras $${ahorro.toLocaleString()}</div>` : ''}
+                                
+                                <a href="${urlCompra}" target="_blank" rel="noopener noreferrer" class="btn-comprar">
+                                    Ver en tienda ↗
+                                </a>
                             </div>
                         `;
                     });
@@ -421,14 +438,24 @@
             const laptop = window.lastRecommendations[currentSlide];
             if (!laptop) return;
             const ahorro = Math.round(laptop.Diferencia_MXN < 0 ? Math.abs(laptop.Diferencia_MXN) : 0);
+            
+            const urlCompra = (laptop.URL_Producto && laptop.URL_Producto.trim() !== '') 
+                ? laptop.URL_Producto 
+                : `https://www.google.com/search?q=${encodeURIComponent(laptop.Marca + ' ' + laptop.Nombre)}`;
+
             let html = `
                 <h3 style="color: #003366; margin-top: 0; margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
                     <span style="color: #00cc99;">✨</span> Recomendación ${currentSlide + 1}
                 </h3>
                 <div class="slider-content">
-                    <p style="margin: 0 0 10px 0;"><strong>Laptop:</strong> ${laptop.Marca}</p>
-                    <p style="margin: 0 0 10px 0;"><strong>Características:</strong> ${laptop.Nombre}</p>
-                    <p style="margin: 0;"><strong>Ahorro:</strong> $${ahorro.toLocaleString()} MXN frente a modelos similares.</p>
+                    <p style="margin: 0 0 8px 0;"><strong>Marca:</strong> ${laptop.Marca}</p>
+                    <p style="margin: 0 0 8px 0;"><strong>Modelo:</strong> ${laptop.Nombre}</p>
+                    <p style="margin: 0 0 8px 0;"><strong>Precio Publicado:</strong> $${Math.round(laptop.Precio_MXN).toLocaleString()} MXN</p>
+                    <p style="margin: 0 0 12px 0; color: #28a745; font-weight: 600;"><strong>Ahorro Estimado:</strong> $${ahorro.toLocaleString()} MXN</p>
+                    
+                    <a href="${urlCompra}" target="_blank" rel="noopener noreferrer" class="btn-comprar" style="margin-top: 5px;">
+                        🛒 Ir a la Oferta en Tienda
+                    </a>
                 </div>
             `;
             if (currentSlide > 0) html += `<button class="slider-btn left" onclick="changeSlide(-1)">❮</button>`;
@@ -440,14 +467,15 @@
         
         function downloadCSV() {
             if (!window.lastRecommendations || window.lastRecommendations.length === 0) return;
-            let csvContent = "Marca,Nombre,Precio_Actual_MXN,Precio_Justo_MXN,Ahorro_MXN\n";
+            let csvContent = "Marca,Nombre,Precio_Actual_MXN,Precio_Justo_MXN,Ahorro_MXN,URL_Producto\n";
             window.lastRecommendations.forEach(laptop => {
                 const ahorro = Math.round(laptop.Diferencia_MXN < 0 ? Math.abs(laptop.Diferencia_MXN) : 0);
-                csvContent += `"${laptop.Marca || ''}","${(laptop.Nombre || '').replace(/"/g, '""')}",${Math.round(laptop.Precio_MXN || 0)},${Math.round(laptop.Precio_Justo_Modelo || 0)},${ahorro}\n`;
+                const url = laptop.URL_Producto || '';
+                csvContent += `"${laptop.Marca || ''}","${(laptop.Nombre || '').replace(/"/g, '""')}",${Math.round(laptop.Precio_MXN || 0)},${Math.round(laptop.Precio_Justo_Modelo || 0)},${ahorro},"${url}"\n`;
             });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' }));
-            link.download = "recomendaciones.csv";
+            link.download = "recomendaciones_claralap.csv";
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
         
