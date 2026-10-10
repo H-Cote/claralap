@@ -127,8 +127,8 @@
         .slider-btn.left { left: 5px; }
         .slider-btn.right { right: 5px; }
     </style>
-    <link rel="preload" href="clara_espera.jpg" as="image">
-    <link rel="preload" href="clara_alegria.jpg" as="image">
+    <link rel="preload" href="clara_espera.jpeg" as="image">
+    <link rel="preload" href="clara_alegria.jpeg" as="image">
 </head>
 <body>
     <header>
@@ -233,7 +233,7 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             // TRANSICIÓN 1: A la imagen de espera
-            changeClaraImage('clara_espera.jpg');
+            changeClaraImage('clara_espera.jpeg');
 
             const loadingId = 'loading-' + Date.now();
             chatMessages.innerHTML += `
@@ -254,7 +254,7 @@
                 document.getElementById(loadingId).remove();
 
                 // TRANSICIÓN 2: A la imagen de alegría
-                changeClaraImage('clara_alegria.jpg');
+                changeClaraImage('clara_alegria.jpeg');
 
                 chatMessages.innerHTML += `
                     <div class="message-wrapper bot">
