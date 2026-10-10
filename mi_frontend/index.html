@@ -16,6 +16,7 @@
 
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-gray); margin: 0; display: flex; flex-direction: column; height: 100vh; }
 
+        /* Barras de desplazamiento generales */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cce0f5; border-radius: 10px; }
@@ -53,13 +54,13 @@
             align-items: flex-end; 
             gap: 20px; 
             overflow-y: auto;
-            position: relative; /* Necesario para contener las capas de fondo */
+            position: relative; 
             overflow: hidden; 
         }
 
         .glass-panel, .cta-panel {
             position: relative;
-            z-index: 2; /* Mantiene los paneles por encima del fondo */
+            z-index: 2; 
         }
 
         .glass-panel {
@@ -71,8 +72,23 @@
             box-shadow: 0 8px 32px rgba(0, 30, 80, 0.1);
             width: 100%;
             max-width: 320px; 
-            margin-left: auto; 
+            margin-left: auto;
+            display: flex;
+            flex-direction: column;
+            max-height: 65vh; /* Limita la altura del panel */
         }
+
+        /* Contenedor de la lista con scroll */
+        #benefit-list {
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-top: 20px;
+        }
+
+        /* Scrollbar interna del panel derecho */
+        #benefit-list::-webkit-scrollbar { width: 4px; }
+        #benefit-list::-webkit-scrollbar-track { background: transparent; }
+        #benefit-list::-webkit-scrollbar-thumb { background: rgba(0, 86, 179, 0.2); border-radius: 10px; }
 
         .cta-panel {
             background: rgba(0, 43, 94, 0.95);
@@ -94,8 +110,9 @@
         .benefit-icon { background: var(--primary-blue); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; flex-shrink: 0; margin-top: 3px; }
         .benefit-text { font-size: 0.8rem; color: #444; line-height: 1.4; }
     </style>
-    <link rel="preload" href="clara_espera.jpeg" as="image">
-    <link rel="preload" href="clara_alegria.jpeg" as="image">
+    <!-- Precarga de imágenes para animaciones fluidas -->
+    <link rel="preload" href="clara_espera.jpg" as="image">
+    <link rel="preload" href="clara_alegria.jpg" as="image">
 </head>
 <body>
     <header>
@@ -150,26 +167,29 @@
         </section>
 
         <section class="visual-column">
-            <!-- Capas para la transición de imágenes -->
+            <!-- Capas para la transición de imágenes de fondo -->
             <div id="bg-layer-1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('fondo_clara.jpg') center/cover no-repeat; transition: opacity 0.8s ease-in-out; opacity: 1; z-index: 0;"></div>
             <div id="bg-layer-2" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: none center/cover no-repeat; transition: opacity 0.8s ease-in-out; opacity: 0; z-index: 0;"></div>
             
             <!-- Filtro para legibilidad -->
             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: inset 0 0 0 2000px rgba(224, 240, 255, 0.1); z-index: 1; pointer-events: none;"></div>
 
-            <!-- Tus paneles originales siguen aquí -->
+            <!-- Panel de beneficios con glassmorphism -->
             <div class="glass-panel">
                 <h3 style="color: #003366; margin-top: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
                     <span style="color: #00cc99;">✨</span> ¿Por qué estas laptops son ideales para ti?
                 </h3>
-                <div id="benefit-list" style="margin-top: 20px;">
+                
+                <div id="benefit-list">
                     <div style="font-size: 0.9rem; color: #555; line-height: 1.6;">Cuéntame tus necesidades y aquí te explicaré detalladamente por qué las opciones que encontré son tu mejor inversión.</div>
                 </div>
-                <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(0,0,0,0.05); font-size: 0.8rem; color: #0056b3; font-weight: 500; display: flex; gap: 8px;">
+
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(0,0,0,0.05); font-size: 0.8rem; color: #0056b3; font-weight: 500; display: flex; gap: 8px;">
                     <span>✨</span> Recuerda, no se trata solo de una laptop, sino de tu aliada para alcanzar tus metas. 💙
                 </div>
             </div>
 
+            <!-- Panel de Call to Action inferior -->
             <div class="cta-panel">
                 <div style="display:flex; justify-content:center; margin-bottom:15px;">
                     <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px;">💻</div>
@@ -190,6 +210,7 @@
             const now = new Date();
             const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+            // Mostrar mensaje del usuario
             chatMessages.innerHTML += `
                 <div class="message-wrapper user">
                     <div class="avatar" style="background: #0056b3;"></div>
@@ -202,8 +223,8 @@
             inputField.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // 1. Cambiamos a la imagen de espera
-            changeClaraImage('clara_espera.jpeg');
+            // Cambiamos el fondo a la imagen de espera
+            changeClaraImage('clara_espera.jpg');
 
             const loadingId = 'loading-' + Date.now();
             chatMessages.innerHTML += `
@@ -212,10 +233,10 @@
                     <div><div class="message-bubble">Analizando opciones...</div></div>
                 </div>
             `;
-            
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
+                // Llamada a la API
                 const response = await fetch('https://claralap-api.onrender.com/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -224,8 +245,8 @@
                 const data = await response.json();
                 document.getElementById(loadingId).remove();
 
-                // 2. Cambiamos a la imagen de alegría al recibir resultados
-                changeClaraImage('clara_alegria.jpeg');
+                // Cambiamos el fondo a la imagen de alegría
+                changeClaraImage('clara_alegria.jpg');
 
                 chatMessages.innerHTML += `
                     <div class="message-wrapper bot">
@@ -237,6 +258,7 @@
                     </div>
                 `;
 
+                // Renderizado de las tarjetas
                 if (data.recomendaciones && data.recomendaciones.length > 0) {
                     window.lastRecommendations = data.recomendaciones;
 
@@ -286,12 +308,33 @@
                     chatMessages.innerHTML += cardsHTML;
                 }
 
-                const explicacionLimpia = data.explicacion.split('\n').filter(line => line.trim() !== '').map(line => 
-                    `<div class="benefit-item">
-                        <div class="benefit-icon">✓</div>
-                        <div class="benefit-text">${line.replace(/[\*\-]/g, '')}</div>
-                     </div>`
-                ).join('');
+                // Generación de la lista en el panel derecho con separación inteligente
+                let explicacionLimpia = '';
+                
+                data.explicacion.split('\n').filter(line => line.trim() !== '').forEach((line, index) => {
+                    let text = line.replace(/[\*\-]/g, '').trim();
+                    
+                    // Si la línea empieza con un número (ej. "1. Lenovo...")
+                    if (/^\d+\./.test(text)) {
+                        // Agrega una línea separadora punteada (excepto antes del primer elemento)
+                        let separator = index > 1 ? `<div style="border-top: 1px dashed rgba(0,0,0,0.15); margin: 15px 0; width: 100%;"></div>` : '';
+                        
+                        explicacionLimpia += `
+                            ${separator}
+                            <div style="color: #003366; font-weight: 700; font-size: 0.95rem; margin-bottom: 10px; margin-top: 10px;">
+                                ✨ ${text}
+                            </div>
+                        `;
+                    } else {
+                        // Elementos regulares de la lista (Características, Ahorro, etc.)
+                        explicacionLimpia += `
+                            <div class="benefit-item">
+                                <div class="benefit-icon" style="background: rgba(0, 86, 179, 0.1); color: var(--primary-blue); width: 18px; height: 18px; font-size: 10px;">✓</div>
+                                <div class="benefit-text">${text}</div>
+                            </div>
+                        `;
+                    }
+                });
                 
                 document.getElementById('benefit-list').innerHTML = explicacionLimpia;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -337,6 +380,7 @@
             document.body.removeChild(link);
         }
         
+        // Lógica para la transición de fondo (crossfade)
         let activeLayer = 1;
 
         function changeClaraImage(newImageSrc) {
