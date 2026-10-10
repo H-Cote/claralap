@@ -221,14 +221,18 @@
                     </div>
                 `;
 
-                if (data.recomendaciones && data.recomendaciones.length > 0) {
+if (data.recomendaciones && data.recomendaciones.length > 0) {
+                    // Guardamos los datos para que el botón pueda usarlos
+                    window.lastRecommendations = data.recomendaciones;
+
                     let cardsHTML = `
                         <div style="background: white; border: 1px solid var(--light-blue); border-radius: 20px; padding: 25px; margin-top: 10px; width: 95%;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                                 <h4 style="margin: 0; color: #003366; display: flex; align-items: center; gap: 8px;">
                                     <span style="color: #00cc99;">✨</span> Tus 3 mejores recomendaciones
                                 </h4>
-                                <button style="background: white; border: 1px solid var(--primary-blue); color: var(--primary-blue); padding: 6px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; cursor: pointer;">📥 Descargar resultados (CSV)</button>
+                                <!-- ¡Aquí agregamos el evento onclick! -->
+                                <button onclick="downloadCSV()" style="background: white; border: 1px solid var(--primary-blue); color: var(--primary-blue); padding: 6px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#f0f8ff'" onmouseout="this.style.background='white'">📥 Descargar resultados (CSV)</button>
                             </div>
                             <div style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px;">
                     `;
@@ -284,6 +288,45 @@
                 document.getElementById(loadingId)?.remove();
                 chatMessages.innerHTML += `<div class="message-wrapper bot"><div class="message-bubble" style="background:#ffebee; color:#c62828;">Hubo un error de conexión con el servidor.</div></div>`;
             }
+        } 
+    // Variable global para guardar las últimas recomendaciones
+        window.lastRecommendations = [];
+
+        // Función para descargar el CSV
+        function downloadCSV() {
+            if (!window.lastRecommendations || window.lastRecommendations.length === 0) {
+                alert("No hay resultados para descargar.");
+                return;
+            }
+
+            // 1. Crear las cabeceras del CSV
+            let csvContent = "Marca,Nombre,Precio_Actual_MXN,Precio_Justo_MXN,Ahorro_MXN\n";
+
+            // 2. Llenar los datos fila por fila
+            window.lastRecommendations.forEach(laptop => {
+                // Escapar textos entre comillas por si traen comas
+                const marca = `"${laptop.Marca || ''}"`;
+                const nombre = `"${(laptop.Nombre || '').replace(/"/g, '""')}"`;
+                
+                const precio = Math.round(laptop.Precio_MXN || 0);
+                const precioJusto = Math.round(laptop.Precio_Justo_Modelo || 0);
+                const ahorro = Math.round(laptop.Diferencia_MXN < 0 ? Math.abs(laptop.Diferencia_MXN) : 0);
+
+                csvContent += `${marca},${nombre},${precio},${precioJusto},${ahorro}\n`;
+            });
+
+            // 3. Crear el archivo (Blob) y forzar la descarga
+            const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' }); // \ufeff es para que Excel lea bien los acentos
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", "recomendaciones_claralap.csv");
+            link.style.display = 'none';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
