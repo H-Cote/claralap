@@ -5,13 +5,13 @@ import pandas as pd
 import json
 import os
 from openai import OpenAI
+from typing import List, Dict, Optional
 
 # Importación directa desde la carpeta app
 from app.motor_match.motor_match import ejecutar_match_matematico
 
 app = FastAPI(title="ClaraLap API")
 
-# Habilitar CORS para permitir peticiones desde Vercel
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,15 +22,12 @@ app.add_middleware(
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Cargar el catálogo (Se asume que está en claralap/backend/catalogo_enriquecido.csv)
 CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "catalogo_enriquecido.csv")
 try:
     df_catalogo = pd.read_csv(CSV_PATH)
 except FileNotFoundError:
-    print(f"Error: No se encontró el archivo en {CSV_PATH}")
     df_catalogo = pd.DataFrame()
 
-# Reconstruir la columna 'Marca'
 def extraer_marca(row):
     for col in row.index:
         if str(col).startswith("Marca_") and row[col] == 1:
@@ -41,91 +38,92 @@ def extraer_marca(row):
 if not df_catalogo.empty and "Marca" not in df_catalogo.columns:
     df_catalogo["Marca"] = df_catalogo.apply(extraer_marca, axis=1)
 
+# AHORA ACEPTAMOS EL HISTORIAL DE LA CONVERSACIÓN
 class ChatRequest(BaseModel):
     mensaje: str
+    historial: Optional[List[Dict[str, str]]] = []
 
-def agente_extraer_requerimientos(prompt_usuario: str):
+def agente_extraer_requerimientos(historial_mensajes: list):
     system_prompt = """
-    Eres un asistente experto en traducir necesidades de usuarios a requerimientos de hardware.
+    Eres un asistente experto evaluando conversaciones para comprar una laptop.
+    Analiza el historial de la conversación.
     Debes responder ÚNICAMENTE con un objeto JSON válido con la siguiente estructura:
     {
-      "buscar_laptops": bool (true solo si el usuario menciona presupuesto, uso, tareas, o características. false si es solo un saludo o charla),
-      "presupuesto_max": float (si no se especifica, asigna 999999),
+      "accion": "saludar" | "preguntar_datos" | "buscar_laptops",
+      "presupuesto_max": float (si no se menciona en absoluto, asigna 999999),
       "necesita_gpu_dedicada": bool,
       "gama_tecnica_minima": "Baja" | "Media" | "Alta",
       "ram_minima_gb": int (4, 8, 16 o 32)
     }
-    Reglas:
-    - AutoCAD, 3D, Gaming, Premiere o IA requieren "necesita_gpu_dedicada": true, "gama_tecnica_minima": "Alta", y "ram_minima_gb": 16.
-    - Oficina, Programación, Universidad requieren "gama_tecnica_minima": "Media" y "ram_minima_gb": 8.
+    Reglas para "accion":
+    - "saludar": Si el usuario solo dice hola o charla sin intención clara.
+    - "preguntar_datos": Si el usuario menciona el uso (ej. "jugar") pero NO el presupuesto, o viceversa.
+    - "buscar_laptops": Si en la conversación ya se entiende el uso principal Y un presupuesto aproximado.
     """
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": prompt_usuario}],
+            # Enviamos el sistema + los últimos 6 mensajes de contexto
+            messages=[{"role": "system", "content": system_prompt}] + historial_mensajes[-6:],
             response_format={"type": "json_object"},
             temperature=0.1
         )
         return json.loads(response.choices[0].message.content)
     except Exception as e:
-        print(f"Error extrayendo requerimientos: {e}")
         return None
-
-# --- ENDPOINT PRINCIPAL ---
 
 @app.post("/api/chat")
 def procesar_consulta(payload: ChatRequest):
-    # 1. Extracción de requerimientos
-    reqs = agente_extraer_requerimientos(payload.mensaje)
+    # Armamos el historial completo para que el LLM tenga contexto
+    historial_completo = payload.historial + [{"role": "user", "content": payload.mensaje}]
+    
+    reqs = agente_extraer_requerimientos(historial_completo)
     if not reqs:
         raise HTTPException(status_code=500, detail="Error al interpretar la consulta.")
 
-    # NUEVA LÓGICA: Si es un saludo o charla sin intención de búsqueda
-    # Usamos get("buscar_laptops", True) por si el LLM olvida la variable, asumimos que busca.
-    if not reqs.get("buscar_laptops", True):
+    accion = reqs.get("accion", "buscar_laptops")
+
+    # Si falta información, Clara pregunta antes de buscar
+    if accion == "saludar" or accion == "preguntar_datos":
+        prompt_charla = "Eres ClaraLap. Falta información (presupuesto o uso). Haz una pregunta CORTA y amable (máximo 2 líneas) para obtener el dato que falta. REGLA ESTRICTA: NO uses formato markdown (CERO asteriscos)."
         try:
             respuesta_charla = client.chat.completions.create(
                 model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": "Eres ClaraLap, una asesora experta en laptops. Responde de forma muy amigable, natural y servicial a este saludo o comentario. Pregunta cortésmente qué uso le darán a la laptop, qué programas usan o qué presupuesto tienen para poder recomendarles las mejores opciones."},
-                    {"role": "user", "content": payload.mensaje}
-                ],
-                temperature=0.7
+                messages=[{"role": "system", "content": prompt_charla}] + historial_completo[-3:]
             )
-            explicacion_charla = respuesta_charla.choices[0].message.content
+            explicacion = respuesta_charla.choices[0].message.content
         except:
-            explicacion_charla = "¡Hola! Soy Clara. Cuéntame, ¿para qué usarás tu laptop o qué presupuesto tienes en mente?"
+            explicacion = "¡Hola! Cuéntame, ¿para qué usarás tu laptop y qué presupuesto tienes en mente?"
 
-        return {
-            "requerimientos": reqs,
-            "recomendaciones": [],
-            "explicacion": explicacion_charla
-        }
+        return {"requerimientos": reqs, "recomendaciones": [], "explicacion": explicacion}
 
-    # 2. Match Matemático (usando la función importada)
+    # Si ya tenemos los datos, buscamos:
     top_laptops_df = ejecutar_match_matematico(df_catalogo, reqs)
     
     if top_laptops_df.empty:
-        return {"recomendaciones": [], "explicacion": "Lo siento, no encontré equipos en el catálogo actual que se ajusten a esos requisitos tan específicos. ¿Podrías ser un poco más flexible con el precio o las características?"}
+        return {"recomendaciones": [], "explicacion": "No encontré equipos con esos requisitos. ¿Podríamos ajustar un poco el presupuesto?"}
 
-    # Limpiar Dataframe y seleccionar columnas útiles
     columnas = ["Marca", "Nombre", "Precio_MXN", "Precio_Justo_Modelo", "Diferencia_MXN"]
     cols_existentes = [col for col in columnas if col in top_laptops_df.columns]
-    
-    top_laptops_df = top_laptops_df[cols_existentes].fillna("")
-    laptops = top_laptops_df.to_dict(orient="records")
+    laptops = top_laptops_df[cols_existentes].fillna("").to_dict(orient="records")
 
-    # 3. Traducción Empática
-    sys_prompt_empatico = "Eres ClaraLap. Explica amigablemente por qué estas laptops son ideales para el usuario y destaca el ahorro detectado. Sé directa y conversacional."
+    # REGLAS ESTRICTAS PARA QUE NO ESCRIBA TEXTOS LARGOS NI ASTERISCOS
+    sys_prompt_empatico = """Eres ClaraLap. Dile al usuario que encontraste opciones ideales.
+    REGLAS ESTRICTAS E INQUEBRANTABLES:
+    1. Sé EXTREMADAMENTE BREVE (máximo 2 oraciones).
+    2. NO menciones nombres de laptops, procesadores ni RAM (el usuario ya lo está viendo en las tarjetas).
+    3. NO uses Markdown bajo ninguna circunstancia (CERO asteriscos **, CERO negritas).
+    4. Habla en texto plano y resalta de forma general que encontraste buen ahorro.
+    """
     try:
         resp_texto = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "system", "content": sys_prompt_empatico},
-                      {"role": "user", "content": f"Requisitos: {reqs}\nLaptops recomendadas: {laptops}"}]
+                      {"role": "user", "content": "Genera el mensaje final de entrega de recomendaciones."}]
         )
         explicacion = resp_texto.choices[0].message.content
     except:
-        explicacion = "¡Perfecto! Con esa información, encontré estas excelentes opciones que se ajustan muy bien a tus necesidades."
+        explicacion = "¡Listo! Aquí tienes las mejores opciones según lo que me comentaste."
 
     return {
         "requerimientos": reqs,
