@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClaraLap | Tu laptop ideal, sin complicaciones</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-        /* ... (Mantenemos tus variables, body, scrollbar y header iguales) ... */
+    <style>
         :root {
             --primary-blue: #0056b3;
             --light-blue: #e0f0ff;
@@ -29,7 +28,6 @@
         main { display: flex; flex: 1; padding: 20px 40px; gap: 20px; overflow: hidden; }
 
         /* --- COLUMNA IZQUIERDA (CHAT) --- */
-        /* (Mantenemos la columna izquierda igual) */
         .chat-column { flex: 6; background: white; border-radius: 20px; display: flex; flex-direction: column; box-shadow: 0 8px 25px rgba(0,0,0,0.04); border: 1px solid var(--light-blue); overflow: hidden; }
         .chat-messages { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         .message-wrapper { display: flex; gap: 15px; align-items: flex-start; max-width: 90%; }
@@ -45,32 +43,35 @@
         .input-row input:focus { border-color: var(--primary-blue); background: white; box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1); }
         .helper-text { font-size: 0.8rem; color: #999; margin-left: 55px; margin-top: 10px; }
 
-
         /* --- MODIFICACIONES EN LA COLUMNA DERECHA (VISUAL) --- */
         .visual-column { 
-            flex: 4; /* Ajustamos la proporción */
+            flex: 4.5; 
             border-radius: 20px; 
             padding: 30px; 
             display: flex; 
             flex-direction: column; 
-            align-items: flex-end; /* CRUCIAL: Alinea el contenido a la derecha */
+            align-items: flex-end; 
             gap: 20px; 
             overflow-y: auto;
-            background: url('fondo_clara.jpg') center/cover no-repeat;
-            box-shadow: inset 0 0 0 2000px rgba(224, 240, 255, 0.1); /* Reducimos la opacidad del filtro para ver más la imagen */
+            position: relative; /* Necesario para contener las capas de fondo */
+            overflow: hidden; 
+        }
+
+        .glass-panel, .cta-panel {
             position: relative;
+            z-index: 2; /* Mantiene los paneles por encima del fondo */
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.85); /* Mayor transparencia */
-            backdrop-filter: blur(12px); /* Mayor desenfoque */
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px); 
             border: 1px solid rgba(255, 255, 255, 0.8);
             border-radius: 20px; 
             padding: 25px; 
             box-shadow: 0 8px 32px rgba(0, 30, 80, 0.1);
             width: 100%;
-            max-width: 320px; /* Ancho máximo más estrecho para dejar ver a Clara */
-            margin-left: auto; /* Empuja el panel a la derecha */
+            max-width: 320px; 
+            margin-left: auto; 
         }
 
         .cta-panel {
@@ -84,10 +85,8 @@
             border: 1px solid rgba(255,255,255,0.1);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 320px; /* Debe coincidir con el max-width del glass-panel */
-            margin-left: auto; /* Empuja el panel a la derecha */
-            position: relative; /* Asegura que se renderice correctamente en algunos navegadores */
-            z-index: 2;
+            max-width: 320px; 
+            margin-left: auto; 
         }
 
         /* Ajustes en los ítems de beneficios */
@@ -95,6 +94,8 @@
         .benefit-icon { background: var(--primary-blue); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; flex-shrink: 0; margin-top: 3px; }
         .benefit-text { font-size: 0.8rem; color: #444; line-height: 1.4; }
     </style>
+    <link rel="preload" href="clara_espera.jpeg" as="image">
+    <link rel="preload" href="clara_alegria.jpeg" as="image">
 </head>
 <body>
     <header>
@@ -149,6 +150,14 @@
         </section>
 
         <section class="visual-column">
+            <!-- Capas para la transición de imágenes -->
+            <div id="bg-layer-1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('clara_saludo.jpg') center/cover no-repeat; transition: opacity 0.8s ease-in-out; opacity: 1; z-index: 0;"></div>
+            <div id="bg-layer-2" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: none center/cover no-repeat; transition: opacity 0.8s ease-in-out; opacity: 0; z-index: 0;"></div>
+            
+            <!-- Filtro para legibilidad -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: inset 0 0 0 2000px rgba(224, 240, 255, 0.1); z-index: 1; pointer-events: none;"></div>
+
+            <!-- Tus paneles originales siguen aquí -->
             <div class="glass-panel">
                 <h3 style="color: #003366; margin-top: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
                     <span style="color: #00cc99;">✨</span> ¿Por qué estas laptops son ideales para ti?
@@ -193,6 +202,9 @@
             inputField.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
+            // 1. Cambiamos a la imagen de espera
+            changeClaraImage('clara_espera.jpeg');
+
             const loadingId = 'loading-' + Date.now();
             chatMessages.innerHTML += `
                 <div class="message-wrapper bot" id="${loadingId}">
@@ -200,6 +212,7 @@
                     <div><div class="message-bubble">Analizando opciones...</div></div>
                 </div>
             `;
+            
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
@@ -211,6 +224,9 @@
                 const data = await response.json();
                 document.getElementById(loadingId).remove();
 
+                // 2. Cambiamos a la imagen de alegría al recibir resultados
+                changeClaraImage('clara_alegria.jpeg');
+
                 chatMessages.innerHTML += `
                     <div class="message-wrapper bot">
                         <div class="avatar" style="background: url('clara_perfil.jpeg') center/cover;"></div>
@@ -221,8 +237,7 @@
                     </div>
                 `;
 
-if (data.recomendaciones && data.recomendaciones.length > 0) {
-                    // Guardamos los datos para que el botón pueda usarlos
+                if (data.recomendaciones && data.recomendaciones.length > 0) {
                     window.lastRecommendations = data.recomendaciones;
 
                     let cardsHTML = `
@@ -231,14 +246,12 @@ if (data.recomendaciones && data.recomendaciones.length > 0) {
                                 <h4 style="margin: 0; color: #003366; display: flex; align-items: center; gap: 8px;">
                                     <span style="color: #00cc99;">✨</span> Tus 3 mejores recomendaciones
                                 </h4>
-                                <!-- ¡Aquí agregamos el evento onclick! -->
                                 <button onclick="downloadCSV()" style="background: white; border: 1px solid var(--primary-blue); color: var(--primary-blue); padding: 6px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#f0f8ff'" onmouseout="this.style.background='white'">📥 Descargar resultados (CSV)</button>
                             </div>
                             <div style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px;">
                     `;
                     
                     data.recomendaciones.forEach((laptop, index) => {
-                        // Redondeo matemático para eliminar decimales extensos
                         const ahorro = Math.round(laptop.Diferencia_MXN < 0 ? Math.abs(laptop.Diferencia_MXN) : 0);
                         const precioFinal = Math.round(laptop.Precio_MXN);
                         const precioOriginal = Math.round(precioFinal + ahorro);
@@ -273,7 +286,6 @@ if (data.recomendaciones && data.recomendaciones.length > 0) {
                     chatMessages.innerHTML += cardsHTML;
                 }
 
-                // Generación de lista con iconos redondos azules
                 const explicacionLimpia = data.explicacion.split('\n').filter(line => line.trim() !== '').map(line => 
                     `<div class="benefit-item">
                         <div class="benefit-icon">✓</div>
@@ -289,7 +301,8 @@ if (data.recomendaciones && data.recomendaciones.length > 0) {
                 chatMessages.innerHTML += `<div class="message-wrapper bot"><div class="message-bubble" style="background:#ffebee; color:#c62828;">Hubo un error de conexión con el servidor.</div></div>`;
             }
         } 
-    // Variable global para guardar las últimas recomendaciones
+        
+        // Variable global para guardar las últimas recomendaciones
         window.lastRecommendations = [];
 
         // Función para descargar el CSV
@@ -299,15 +312,11 @@ if (data.recomendaciones && data.recomendaciones.length > 0) {
                 return;
             }
 
-            // 1. Crear las cabeceras del CSV
             let csvContent = "Marca,Nombre,Precio_Actual_MXN,Precio_Justo_MXN,Ahorro_MXN\n";
 
-            // 2. Llenar los datos fila por fila
             window.lastRecommendations.forEach(laptop => {
-                // Escapar textos entre comillas por si traen comas
                 const marca = `"${laptop.Marca || ''}"`;
                 const nombre = `"${(laptop.Nombre || '').replace(/"/g, '""')}"`;
-                
                 const precio = Math.round(laptop.Precio_MXN || 0);
                 const precioJusto = Math.round(laptop.Precio_Justo_Modelo || 0);
                 const ahorro = Math.round(laptop.Diferencia_MXN < 0 ? Math.abs(laptop.Diferencia_MXN) : 0);
@@ -315,8 +324,7 @@ if (data.recomendaciones && data.recomendaciones.length > 0) {
                 csvContent += `${marca},${nombre},${precio},${precioJusto},${ahorro}\n`;
             });
 
-            // 3. Crear el archivo (Blob) y forzar la descarga
-            const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' }); // \ufeff es para que Excel lea bien los acentos
+            const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' }); 
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             
@@ -327,6 +335,25 @@ if (data.recomendaciones && data.recomendaciones.length > 0) {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+        
+        let activeLayer = 1;
+
+        function changeClaraImage(newImageSrc) {
+            const layer1 = document.getElementById('bg-layer-1');
+            const layer2 = document.getElementById('bg-layer-2');
+
+            if (activeLayer === 1) {
+                layer2.style.backgroundImage = `url('${newImageSrc}')`;
+                layer2.style.opacity = 1;
+                layer1.style.opacity = 0;
+                activeLayer = 2;
+            } else {
+                layer1.style.backgroundImage = `url('${newImageSrc}')`;
+                layer1.style.opacity = 1;
+                layer2.style.opacity = 0;
+                activeLayer = 1;
+            }
         }
     </script>
 </body>
