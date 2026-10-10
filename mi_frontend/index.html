@@ -28,7 +28,7 @@
 
         main { display: flex; flex: 1; padding: 20px 40px; gap: 20px; overflow: hidden; }
 
-        /* --- COLUMNA IZQUIERDA (CHAT) --- */
+        /* --- COLUMNA IZQUIERDA (CHAT) - INTACTA --- */
         .chat-column { flex: 6; background: white; border-radius: 20px; display: flex; flex-direction: column; box-shadow: 0 8px 25px rgba(0,0,0,0.04); border: 1px solid var(--light-blue); overflow: hidden; }
         .chat-messages { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         .message-wrapper { display: flex; gap: 15px; align-items: flex-start; max-width: 90%; }
@@ -44,7 +44,7 @@
         .input-row input:focus { border-color: var(--primary-blue); background: white; box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1); }
         .helper-text { font-size: 0.8rem; color: #999; margin-left: 55px; margin-top: 10px; }
 
-        /* --- MODIFICACIONES EN LA COLUMNA DERECHA (VISUAL) --- */
+        /* --- COLUMNA DERECHA (VISUAL) --- */
         .visual-column { 
             flex: 4.5; 
             border-radius: 20px; 
@@ -58,59 +58,64 @@
             overflow: hidden; 
         }
 
-        .glass-panel, .cta-panel {
+        .glass-panel, .slider-panel {
             position: relative;
             z-index: 2; 
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.85); 
+            background: rgba(255, 255, 255, 0.92); 
             backdrop-filter: blur(12px); 
             border: 1px solid rgba(255, 255, 255, 0.8);
             border-radius: 20px; 
             padding: 25px; 
             box-shadow: 0 8px 32px rgba(0, 30, 80, 0.1);
             width: 100%;
-            max-width: 320px; 
+            max-width: 340px; 
             margin-left: auto;
             display: flex;
             flex-direction: column;
-            max-height: 65vh; /* Limita la altura del panel */
         }
 
-        /* Contenedor de la lista con scroll */
-        #benefit-list {
-            overflow-y: auto;
-            padding-right: 10px;
-            margin-top: 20px;
-        }
-
-        /* Scrollbar interna del panel derecho */
-        #benefit-list::-webkit-scrollbar { width: 4px; }
-        #benefit-list::-webkit-scrollbar-track { background: transparent; }
-        #benefit-list::-webkit-scrollbar-thumb { background: rgba(0, 86, 179, 0.2); border-radius: 10px; }
-
-        .cta-panel {
-            background: rgba(0, 43, 94, 0.95);
-            backdrop-filter: blur(8px);
-            border-radius: 20px; 
-            padding: 25px; 
-            color: white; 
-            margin-top: auto; 
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        /* Estilos para el slider de recomendaciones */
+        .slider-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 30, 80, 0.15);
             width: 100%;
-            max-width: 320px; 
-            margin-left: auto; 
+            max-width: 340px;
+            margin-left: auto;
+            display: none; /* Oculto hasta tener datos */
+            min-height: 220px;
         }
 
-        /* Ajustes en los ítems de beneficios */
-        .benefit-item { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
-        .benefit-icon { background: var(--primary-blue); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; flex-shrink: 0; margin-top: 3px; }
-        .benefit-text { font-size: 0.8rem; color: #444; line-height: 1.4; }
+        .slider-content {
+            padding: 0 20px; /* Margen para no pisar las flechas */
+            font-size: 0.85rem;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 55%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s;
+        }
+        
+        .slider-btn:hover { transform: translateY(-50%) scale(1.1); }
+        .slider-btn.left { left: 5px; }
+        .slider-btn.right { right: 5px; }
     </style>
-    <!-- Precarga de imágenes para animaciones fluidas -->
     <link rel="preload" href="clara_espera.jpg" as="image">
     <link rel="preload" href="clara_alegria.jpg" as="image">
 </head>
@@ -138,6 +143,7 @@
     </header>
 
     <main>
+        <!-- COLUMNA IZQUIERDA -->
         <section class="chat-column">
             <div class="chat-messages" id="chat-messages">
                 <div class="message-wrapper bot">
@@ -166,41 +172,40 @@
             </div>
         </section>
 
+        <!-- COLUMNA DERECHA -->
         <section class="visual-column">
-            <!-- Capas para la transición de imágenes de fondo -->
+            <!-- Capas de fondo -->
             <div id="bg-layer-1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('fondo_clara.jpg') center/cover no-repeat; transition: opacity 0.8s ease-in-out; opacity: 1; z-index: 0;"></div>
             <div id="bg-layer-2" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: none center/cover no-repeat; transition: opacity 0.8s ease-in-out; opacity: 0; z-index: 0;"></div>
-            
-            <!-- Filtro para legibilidad -->
             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: inset 0 0 0 2000px rgba(224, 240, 255, 0.1); z-index: 1; pointer-events: none;"></div>
 
-            <!-- Panel de beneficios con glassmorphism -->
+            <!-- Panel Superior de Saludo -->
             <div class="glass-panel">
                 <h3 style="color: #003366; margin-top: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
                     <span style="color: #00cc99;">✨</span> ¿Por qué estas laptops son ideales para ti?
                 </h3>
                 
-                <div id="benefit-list">
-                    <div style="font-size: 0.9rem; color: #555; line-height: 1.6;">Cuéntame tus necesidades y aquí te explicaré detalladamente por qué las opciones que encontré son tu mejor inversión.</div>
-                </div>
-
-                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(0,0,0,0.05); font-size: 0.8rem; color: #0056b3; font-weight: 500; display: flex; gap: 8px;">
-                    <span>✨</span> Recuerda, no se trata solo de una laptop, sino de tu aliada para alcanzar tus metas. 💙
+                <div>
+                    <div style="font-size: 0.9rem; color: #555; line-height: 1.6;">
+                        <span style="background: var(--primary-blue); color: white; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; margin-right: 8px;">✓</span>
+                        ¡Hola! Quería hablarte de unas laptops que realmente son una excelente opción para ti, considerando tus requisitos y, lo más importante, el presupuesto que tienes en mente.
+                    </div>
                 </div>
             </div>
 
-            <!-- Panel de Call to Action inferior -->
-            <div class="cta-panel">
-                <div style="display:flex; justify-content:center; margin-bottom:15px;">
-                    <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px;">💻</div>
-                </div>
-                <p style="margin: 0 0 15px 0; font-size: 0.95rem; font-weight: 500;">¿Quieres explorar más opciones o ajustar tu presupuesto?</p>
-                <button style="background: #3388ff; color: white; border: none; padding: 12px 25px; border-radius: 30px; font-weight: 600; cursor: pointer; width: 100%; font-size: 0.9rem;">↻ Volver a personalizar</button>
+            <!-- Panel de Slider (Recomendaciones) -->
+            <div class="slider-panel" id="recommendation-slider">
+                <!-- Se llena dinámicamente -->
             </div>
         </section>
     </main>
 
     <script>
+        // Variables globales
+        window.lastRecommendations = [];
+        let currentSlide = 0;
+        let activeLayer = 1;
+
         async function sendQuery() {
             const inputField = document.getElementById('user-input');
             const userText = inputField.value.trim();
@@ -210,7 +215,7 @@
             const now = new Date();
             const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            // Mostrar mensaje del usuario
+            // Mostrar mensaje del usuario en el chat
             chatMessages.innerHTML += `
                 <div class="message-wrapper user">
                     <div class="avatar" style="background: #0056b3;"></div>
@@ -223,7 +228,7 @@
             inputField.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // Cambiamos el fondo a la imagen de espera
+            // Cambiar imagen de fondo a espera
             changeClaraImage('clara_espera.jpg');
 
             const loadingId = 'loading-' + Date.now();
@@ -236,7 +241,7 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
-                // Llamada a la API
+                // Fetch de datos
                 const response = await fetch('https://claralap-api.onrender.com/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -245,9 +250,10 @@
                 const data = await response.json();
                 document.getElementById(loadingId).remove();
 
-                // Cambiamos el fondo a la imagen de alegría
+                // Cambiar imagen de fondo a alegría
                 changeClaraImage('clara_alegria.jpg');
 
+                // Respuesta final en el chat
                 chatMessages.innerHTML += `
                     <div class="message-wrapper bot">
                         <div class="avatar" style="background: url('clara_perfil.jpeg') center/cover;"></div>
@@ -258,7 +264,7 @@
                     </div>
                 `;
 
-                // Renderizado de las tarjetas
+                // --- INICIO: RENDERIZADO INTACTO DE LAS TARJETAS EN EL CHAT ---
                 if (data.recomendaciones && data.recomendaciones.length > 0) {
                     window.lastRecommendations = data.recomendaciones;
 
@@ -306,83 +312,87 @@
                     
                     cardsHTML += `</div></div>`;
                     chatMessages.innerHTML += cardsHTML;
-                }
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
 
-                // Generación de la lista en el panel derecho con separación inteligente
-                let explicacionLimpia = '';
-                
-                data.explicacion.split('\n').filter(line => line.trim() !== '').forEach((line, index) => {
-                    let text = line.replace(/[\*\-]/g, '').trim();
-                    
-                    // Si la línea empieza con un número (ej. "1. Lenovo...")
-                    if (/^\d+\./.test(text)) {
-                        // Agrega una línea separadora punteada (excepto antes del primer elemento)
-                        let separator = index > 1 ? `<div style="border-top: 1px dashed rgba(0,0,0,0.15); margin: 15px 0; width: 100%;"></div>` : '';
-                        
-                        explicacionLimpia += `
-                            ${separator}
-                            <div style="color: #003366; font-weight: 700; font-size: 0.95rem; margin-bottom: 10px; margin-top: 10px;">
-                                ✨ ${text}
-                            </div>
-                        `;
-                    } else {
-                        // Elementos regulares de la lista (Características, Ahorro, etc.)
-                        explicacionLimpia += `
-                            <div class="benefit-item">
-                                <div class="benefit-icon" style="background: rgba(0, 86, 179, 0.1); color: var(--primary-blue); width: 18px; height: 18px; font-size: 10px;">✓</div>
-                                <div class="benefit-text">${text}</div>
-                            </div>
-                        `;
-                    }
-                });
-                
-                document.getElementById('benefit-list').innerHTML = explicacionLimpia;
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                    // --- INICIO: RENDERIZADO DEL SLIDER EN EL PANEL DERECHO ---
+                    currentSlide = 0;
+                    document.getElementById('recommendation-slider').style.display = 'block';
+                    renderSlide();
+                }
 
             } catch (error) {
                 document.getElementById(loadingId)?.remove();
                 chatMessages.innerHTML += `<div class="message-wrapper bot"><div class="message-bubble" style="background:#ffebee; color:#c62828;">Hubo un error de conexión con el servidor.</div></div>`;
             }
         } 
-        
-        // Variable global para guardar las últimas recomendaciones
-        window.lastRecommendations = [];
 
-        // Función para descargar el CSV
-        function downloadCSV() {
-            if (!window.lastRecommendations || window.lastRecommendations.length === 0) {
-                alert("No hay resultados para descargar.");
-                return;
+        // Función para renderizar el panel de Slider de la derecha
+        function renderSlide() {
+            const laptop = window.lastRecommendations[currentSlide];
+            const sliderContainer = document.getElementById('recommendation-slider');
+            if (!laptop) return;
+
+            const ahorro = Math.round(laptop.Diferencia_MXN < 0 ? Math.abs(laptop.Diferencia_MXN) : 0);
+
+            let html = `
+                <h3 style="color: #003366; margin-top: 0; margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                    <span style="color: #00cc99;">✨</span> Recomendación ${currentSlide + 1}
+                </h3>
+                
+                <div class="slider-content">
+                    <div style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px;">
+                        <span style="background: var(--primary-blue); color: white; border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; margin-top: 2px;">✓</span>
+                        <p style="margin: 0;"><strong>Laptop:</strong> ${laptop.Marca}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 10px; padding-left: 24px;">
+                        <p style="margin: 0;"><strong>Características:</strong> ${laptop.Nombre}</p>
+                    </div>
+                    
+                    <div style="padding-left: 24px;">
+                        <p style="margin: 0;"><strong>Ahorro:</strong> Esta compra representa un ahorro estimado de <strong>$${ahorro.toLocaleString()} MXN</strong> en comparación con modelos similares con el mismo nivel de rendimiento.</p>
+                    </div>
+                </div>
+            `;
+
+            // Botones interactivos (flechas)
+            if (currentSlide > 0) {
+                html += `<button class="slider-btn left" onclick="changeSlide(-1)">❮</button>`;
+            }
+            if (currentSlide < window.lastRecommendations.length - 1) {
+                html += `<button class="slider-btn right" onclick="changeSlide(1)">❯</button>`;
             }
 
-            let csvContent = "Marca,Nombre,Precio_Actual_MXN,Precio_Justo_MXN,Ahorro_MXN\n";
+            sliderContainer.innerHTML = html;
+        }
 
+        function changeSlide(direction) {
+            currentSlide += direction;
+            renderSlide();
+        }
+        
+        function downloadCSV() {
+            if (!window.lastRecommendations || window.lastRecommendations.length === 0) return;
+            let csvContent = "Marca,Nombre,Precio_Actual_MXN,Precio_Justo_MXN,Ahorro_MXN\n";
             window.lastRecommendations.forEach(laptop => {
                 const marca = `"${laptop.Marca || ''}"`;
                 const nombre = `"${(laptop.Nombre || '').replace(/"/g, '""')}"`;
                 const precio = Math.round(laptop.Precio_MXN || 0);
                 const precioJusto = Math.round(laptop.Precio_Justo_Modelo || 0);
                 const ahorro = Math.round(laptop.Diferencia_MXN < 0 ? Math.abs(laptop.Diferencia_MXN) : 0);
-
                 csvContent += `${marca},${nombre},${precio},${precioJusto},${ahorro}\n`;
             });
-
             const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' }); 
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
-            
             link.setAttribute("href", url);
             link.setAttribute("download", "recomendaciones_claralap.csv");
             link.style.display = 'none';
-            
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
         
-        // Lógica para la transición de fondo (crossfade)
-        let activeLayer = 1;
-
         function changeClaraImage(newImageSrc) {
             const layer1 = document.getElementById('bg-layer-1');
             const layer2 = document.getElementById('bg-layer-2');
