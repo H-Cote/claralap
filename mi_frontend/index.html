@@ -5,25 +5,181 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClaraLap | Tu laptop ideal, sin complicaciones</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* CSS BASE (En el siguiente paso lo actualizaremos por completo para que sea idéntico al diseño) */
-        body { font-family: 'Poppins', sans-serif; background-color: #f4f7fb; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        nav { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .nav-links a { margin: 0 15px; text-decoration: none; color: #333; font-weight: 500; }
-        main { display: flex; flex: 1; padding: 20px 40px; gap: 20px; overflow: hidden; }
-        .chat-column { flex: 6; background: white; border-radius: 20px; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden;}
-        .visual-column { flex: 4; background: #e0f0ff; border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto;}
-        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .message-wrapper { display: flex; gap: 10px; align-items: flex-end; max-width: 80%; }
+<style>
+        :root {
+            --primary-blue: #0056b3;
+            --light-blue: #e0f0ff;
+            --bg-gray: #f4f7fb;
+            --text-dark: #333333;
+            --text-muted: #777777;
+            --card-border: #e0e0e0;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg-gray); 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+        }
+
+        /* --- HEADER --- */
+        nav { 
+            background: white; 
+            padding: 15px 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            z-index: 10;
+        }
+        .nav-links a { 
+            margin: 0 15px; 
+            text-decoration: none; 
+            color: var(--text-dark); 
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding-bottom: 5px;
+        }
+        .nav-links a.active {
+            color: var(--primary-blue);
+            border-bottom: 2px solid #00cccc;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        main { 
+            display: flex; 
+            flex: 1; 
+            padding: 20px 40px; 
+            gap: 20px; 
+            overflow: hidden; 
+        }
+
+        /* --- COLUMNA CHAT (IZQUIERDA) --- */
+        .chat-column { 
+            flex: 6; 
+            background: white; 
+            border-radius: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.04); 
+            overflow: hidden;
+            border: 1px solid var(--light-blue);
+        }
+        .chat-messages { 
+            flex: 1; 
+            padding: 30px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+        }
+        
+        /* Burbujas de Chat */
+        .message-wrapper { display: flex; gap: 15px; align-items: flex-start; max-width: 85%; }
         .message-wrapper.user { align-self: flex-end; flex-direction: row-reverse; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #ccc; }
-        .message-bubble { padding: 12px 18px; border-radius: 15px; background: #f0f4f8; }
-        .message-wrapper.user .message-bubble { background: #0056b3; color: white; }
-        .timestamp { font-size: 0.7rem; color: #999; margin-top: 5px; display: block; }
-        .chat-input-area { padding: 15px 20px; border-top: 1px solid #eee; display: flex; flex-direction: column; gap: 10px; }
-        .input-row { display: flex; gap: 10px; align-items: center; }
-        .input-row input { flex: 1; padding: 12px 20px; border: 1px solid #ddd; border-radius: 30px; outline: none; font-family: inherit; }
-        .helper-text { font-size: 0.75rem; color: #999; margin-left: 50px; }
+        
+        .avatar { 
+            width: 45px; 
+            height: 45px; 
+            border-radius: 50%; 
+            background-color: var(--light-blue);
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .message-content { display: flex; flex-direction: column; }
+        .message-wrapper.user .message-content { align-items: flex-end; }
+        
+        .message-bubble { 
+            padding: 15px 20px; 
+            border-radius: 20px; 
+            font-size: 0.95rem;
+            line-height: 1.5;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        
+        /* Estilo Bot (Clara) */
+        .message-wrapper.bot .message-bubble { 
+            background: #f8fbff; 
+            color: var(--text-dark); 
+            border: 1px solid var(--light-blue);
+            border-top-left-radius: 5px;
+        }
+        
+        /* Estilo Usuario */
+        .message-wrapper.user .message-bubble { 
+            background: var(--primary-blue); 
+            color: white; 
+            border-top-right-radius: 5px;
+        }
+
+        .timestamp { font-size: 0.75rem; color: #aaa; margin-top: 5px; }
+
+        /* Input Area */
+        .chat-input-area { 
+            padding: 20px 30px; 
+            border-top: 1px solid #f0f0f0; 
+            background: white;
+        }
+        .input-row { display: flex; gap: 15px; align-items: center; }
+        .input-row input { 
+            flex: 1; 
+            padding: 15px 25px; 
+            border: 1px solid #e0e0e0; 
+            border-radius: 30px; 
+            outline: none; 
+            font-family: inherit; 
+            font-size: 0.95rem;
+            background: #fcfcfc;
+            transition: all 0.3s;
+        }
+        .input-row input:focus {
+            border-color: var(--primary-blue);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1);
+        }
+        .helper-text { font-size: 0.8rem; color: #999; margin-left: 55px; margin-top: 10px; }
+
+        /* --- COLUMNA VISUAL (DERECHA) --- */
+        .visual-column { 
+            flex: 4; 
+            border-radius: 20px; 
+            padding: 25px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+            overflow-y: auto;
+            position: relative;
+            /* AQUÍ DEBES PONER EL NOMBRE DE TU IMAGEN GUARDADA EN LA CARPETA */
+            background: url('fondo_clara.jpg') center/cover no-repeat;
+            box-shadow: inset 0 0 0 2000px rgba(224, 240, 255, 0.4); /* Filtro azulado suave */
+        }
+
+        /* Glassmorphism para las tarjetas de la derecha */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px; 
+            padding: 25px; 
+            box-shadow: 0 8px 32px rgba(0, 30, 80, 0.1);
+        }
+
+        /* Call to action inferior derecho */
+        .cta-panel {
+            background: rgba(0, 43, 94, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px; 
+            padding: 25px; 
+            color: white; 
+            margin-top: auto; 
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 <body>
