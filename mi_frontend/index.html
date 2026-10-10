@@ -127,7 +127,7 @@
         .slider-btn.left { left: 5px; }
         .slider-btn.right { right: 5px; }
     </style>
-    <!-- PRECARGA CON EXTENSIÓN CORRECCTAS (.jpeg) -->
+    <!-- PRECARGA DE IMÁGENES (.jpeg) -->
     <link rel="preload" href="fondo_clara.jpeg" as="image">
     <link rel="preload" href="clara_espera.jpeg" as="image">
     <link rel="preload" href="clara_alegria.jpeg" as="image">
@@ -162,10 +162,11 @@
                     <div class="avatar" style="background: url('clara_perfil.jpeg') center/cover;"></div>
                     <div>
                         <div class="message-bubble">
-                            ¡Hola! Soy Clara, tu asistente de laptops.<br><br>
-                            Para recomendarte las mejores opciones, cuéntame:<br>
-                            ¿Qué vas a hacer principalmente con tu laptop?<br>
-                            <span style="color:#777; font-size: 0.9em;">(Por ejemplo: estudiar, trabajar, diseñar, programar, jugar, etc.)</span>
+                            ¡Hola! Soy Clara, tu asesora de laptops.<br><br>
+                            Puedo ayudarte a dos cosas:<br>
+                            1. 🎯 <strong>Recomendarte la mejor laptop</strong> según tu presupuesto y uso.<br>
+                            2. 🔍 <strong>Evaluar una oferta</strong> que hayas visto en internet para decirte si está a buen precio o sobreprecio.<br><br>
+                            ¿En qué te puedo ayudar hoy?
                         </div>
                         <span class="timestamp">10:24 a.m.</span>
                     </div>
@@ -180,7 +181,7 @@
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                     </button>
                 </div>
-                <div class="helper-text">Puedes ser tan específico como quieras. Mientras más detalles, mejores recomendaciones.</div>
+                <div class="helper-text">Puedes pedirme recomendaciones o darme el precio y specs de una laptop que encontraste.</div>
             </div>
         </section>
 
@@ -197,12 +198,12 @@
                 <div id="panel-text">
                     <div style="font-size: 0.9rem; color: #555; line-height: 1.6;">
                         <span style="background: var(--primary-blue); color: white; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; margin-right: 8px;">✓</span>
-                        Cuéntame en el chat para qué usarás tu equipo, qué programas sueles utilizar o si tienes un presupuesto en mente. ¡Yo me encargaré de buscar y comparar para darte las mejores opciones!
+                        Cuéntame qué buscas o qué opción encontraste en internet. ¡Yo me encargo de analizar los precios y darte el mejor veredicto!
                     </div>
                 </div>
             </div>
 
-            <!-- Panel de Slider -->
+            <!-- Panel de Slider (Recomendaciones) -->
             <div class="slider-panel" id="recommendation-slider"></div>
         </section>
     </main>
@@ -236,7 +237,6 @@
 
             window.chatHistory.push({ role: "user", content: userText });
 
-            // Transición a la imagen de espera (.jpeg)
             changeClaraImage('clara_espera.jpeg');
 
             const loadingId = 'loading-' + Date.now();
@@ -269,8 +269,32 @@
                     </div>
                 `;
 
-                if (data.recomendaciones && data.recomendaciones.length > 0) {
-                    // Transición a la imagen de alegría (.jpeg)
+                // CASO A: Evaluación de una oferta específica del usuario
+                if (data.evaluacion_oferta) {
+                    const evalData = data.evaluacion_oferta;
+                    
+                    if (evalData.veredicto === 'ganga') {
+                        changeClaraImage('clara_alegria.jpeg');
+                    } else {
+                        changeClaraImage('clara_espera.jpeg');
+                    }
+
+                    document.getElementById('recommendation-slider').style.display = 'none';
+
+                    document.getElementById('panel-title').innerHTML = `✨ Evaluación de Oferta`;
+                    document.getElementById('panel-text').innerHTML = `
+                        <div style="font-size: 0.9rem; color: #333; line-height: 1.6;">
+                            <div style="font-size: 1.05rem; font-weight: bold; margin-bottom: 8px;">${evalData.etiqueta}</div>
+                            <p style="margin: 4px 0;"><strong>Precio visto:</strong> $${evalData.precio_usuario.toLocaleString()} MXN</p>
+                            <p style="margin: 4px 0;"><strong>Precio justo estimado:</strong> $${evalData.precio_justo_estimado.toLocaleString()} MXN</p>
+                            <p style="margin: 4px 0; color: ${evalData.veredicto === 'sobreprecio' ? '#d9534f' : '#28a745'}; font-weight: 600;">
+                                Diferencia: $${evalData.diferencia_mxn.toLocaleString()} MXN ${evalData.veredicto === 'sobreprecio' ? 'por encima del precio justo' : 'de ahorro estimado'}
+                            </p>
+                        </div>
+                    `;
+                } 
+                // CASO B: Recomendación de catálogo
+                else if (data.recomendaciones && data.recomendaciones.length > 0) {
                     changeClaraImage('clara_alegria.jpeg');
                     
                     document.getElementById('panel-title').innerHTML = `<span style="color: #00cc99;">✨</span> ¿Por qué estas laptops son ideales para ti?`;
@@ -323,7 +347,6 @@
                     document.getElementById('recommendation-slider').style.display = 'block';
                     renderSlide();
                 } else {
-                    // Si no arrojó recomendaciones directas, volver al fondo neutro (.jpeg)
                     changeClaraImage('fondo_clara.jpeg');
                 }
 
@@ -370,9 +393,8 @@
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
         
-        // FUNCIÓN MEJORADA DE TRANSICIÓN CRUZADA (FADE)
         function changeClaraImage(newImageSrc) {
-            if (currentImage === newImageSrc) return; // Evitar parpadear si es la misma imagen
+            if (currentImage === newImageSrc) return;
             currentImage = newImageSrc;
 
             const layer1 = document.getElementById('bg-layer-1');
