@@ -221,11 +221,11 @@
             const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
             chatMessages.innerHTML += `
-                <div class="message-wrapper user">
-                    <div class="avatar" style="background: #0056b3;"></div>
-                    <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                        <div class="message-bubble">${userText}</div>
-                        <span class="timestamp">${timeString}</span>
+                <div class="message-wrapper bot">
+                    <div class="avatar" style="background: url('clara_perfil.jpeg') center/cover;"></div>
+                    <div>
+                        <div class="message-bubble">${data.explicacion}</div>
+                        <span class="timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
                 </div>
             `;
