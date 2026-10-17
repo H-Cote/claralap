@@ -1,0 +1,206 @@
+[
+    {
+        "patron": "i3-10110u",
+        "modelo": "Intel Core i3-10110U",
+        "nucleos": 2,
+        "gen": "10ª Gen (Comet Lake)"
+    },
+    {
+        "patron": "i3-1115g",
+        "modelo": "Intel Core i3-1115G4",
+        "nucleos": 2,
+        "gen": "11ª Gen (Tiger Lake)"
+    },
+    {
+        "patron": "i3-1215u",
+        "modelo": "Intel Core i3-1215U",
+        "nucleos": 6,
+        "gen": "12ª Gen (Alder Lake)"
+    },
+    {
+        "patron": "i3-1315u",
+        "modelo": "Intel Core i3-1315U",
+        "nucleos": 6,
+        "gen": "13ª Gen (Raptor Lake)"
+    },
+    {
+        "patron": "i5-10300h",
+        "modelo": "Intel Core i5-10300H",
+        "nucleos": 4,
+        "gen": "10ª Gen (Comet Lake)"
+    },
+    {
+        "patron": "i5-1135g",
+        "modelo": "Intel Core i5-1135G7",
+        "nucleos": 4,
+        "gen": "11ª Gen (Tiger Lake)"
+    },
+    {
+        "patron": "i5-1235u",
+        "modelo": "Intel Core i5-1235U",
+        "nucleos": 10,
+        "gen": "12ª Gen (Alder Lake)"
+    },
+    {
+        "patron": "i5-12450h",
+        "modelo": "Intel Core i5-12450H",
+        "nucleos": 8,
+        "gen": "12ª Gen (Alder Lake)"
+    },
+    {
+        "patron": "i5-1335u",
+        "modelo": "Intel Core i5-1335U",
+        "nucleos": 10,
+        "gen": "13ª Gen (Raptor Lake)"
+    },
+    {
+        "patron": "i5-13420h",
+        "modelo": "Intel Core i5-13420H",
+        "nucleos": 8,
+        "gen": "13ª Gen (Raptor Lake)"
+    },
+    {
+        "patron": "i7-1165g",
+        "modelo": "Intel Core i7-1165G7",
+        "nucleos": 4,
+        "gen": "11ª Gen (Tiger Lake)"
+    },
+    {
+        "patron": "i7-1255u",
+        "modelo": "Intel Core i7-1255U",
+        "nucleos": 10,
+        "gen": "12ª Gen (Alder Lake)"
+    },
+    {
+        "patron": "i7-12700h",
+        "modelo": "Intel Core i7-12700H",
+        "nucleos": 14,
+        "gen": "12ª Gen (Alder Lake)"
+    },
+    {
+        "patron": "i7-1355u",
+        "modelo": "Intel Core i7-1355U",
+        "nucleos": 10,
+        "gen": "13ª Gen (Raptor Lake)"
+    },
+    {
+        "patron": "i7-13700h",
+        "modelo": "Intel Core i7-13700H",
+        "nucleos": 14,
+        "gen": "13ª Gen (Raptor Lake)"
+    },
+    {
+        "patron": "i9-13900hx",
+        "modelo": "Intel Core i9-13900HX",
+        "nucleos": 24,
+        "gen": "13ª Gen (Raptor Lake)"
+    },
+    {
+        "patron": "\\bn100\\b",
+        "modelo": "Intel Processor N100",
+        "nucleos": 4,
+        "gen": "Alder Lake-N"
+    },
+    {
+        "patron": "\\bn200\\b",
+        "modelo": "Intel Processor N200",
+        "nucleos": 4,
+        "gen": "Alder Lake-N"
+    },
+    {
+        "patron": "n305",
+        "modelo": "Intel Core i3-N305",
+        "nucleos": 8,
+        "gen": "Alder Lake-N"
+    },
+    {
+        "patron": "ryzen 3 3250u",
+        "modelo": "AMD Ryzen 3 3250U",
+        "nucleos": 2,
+        "gen": "Serie 3000 (Zen+)"
+    },
+    {
+        "patron": "ryzen 3 5300u",
+        "modelo": "AMD Ryzen 3 5300U",
+        "nucleos": 4,
+        "gen": "Serie 5000 (Zen 2)"
+    },
+    {
+        "patron": "ryzen 3 7320u",
+        "modelo": "AMD Ryzen 3 7320U",
+        "nucleos": 4,
+        "gen": "Serie 7000 (Zen 2)"
+    },
+    {
+        "patron": "ryzen 5 4500u",
+        "modelo": "AMD Ryzen 5 4500U",
+        "nucleos": 6,
+        "gen": "Serie 4000 (Zen 2)"
+    },
+    {
+        "patron": "ryzen 5 5500u",
+        "modelo": "AMD Ryzen 5 5500U",
+        "nucleos": 6,
+        "gen": "Serie 5000 (Zen 2)"
+    },
+    {
+        "patron": "ryzen 5 5600h",
+        "modelo": "AMD Ryzen 5 5600H",
+        "nucleos": 6,
+        "gen": "Serie 5000 (Zen 3)"
+    },
+    {
+        "patron": "ryzen 5 7520u",
+        "modelo": "AMD Ryzen 5 7520U",
+        "nucleos": 4,
+        "gen": "Serie 7000 (Zen 2)"
+    },
+    {
+        "patron": "ryzen 7 5700u",
+        "modelo": "AMD Ryzen 7 5700U",
+        "nucleos": 8,
+        "gen": "Serie 5000 (Zen 2)"
+    },
+    {
+        "patron": "ryzen 7 5800h",
+        "modelo": "AMD Ryzen 7 5800H",
+        "nucleos": 8,
+        "gen": "Serie 5000 (Zen 3)"
+    },
+    {
+        "patron": "ryzen 7 7730u",
+        "modelo": "AMD Ryzen 7 7730U",
+        "nucleos": 8,
+        "gen": "Serie 7000 (Zen 3)"
+    },
+    {
+        "patron": "ryzen 7 8840hs",
+        "modelo": "AMD Ryzen 7 8840HS",
+        "nucleos": 8,
+        "gen": "Serie 8000 (Zen 4)"
+    },
+    {
+        "patron": "m1(?!\\s*pro)",
+        "modelo": "Apple M1",
+        "nucleos": 8,
+        "gen": "Apple Silicon (1ª Gen)"
+    },
+    {
+        "patron": "m1\\s*pro",
+        "modelo": "Apple M1 Pro",
+        "nucleos": 10,
+        "gen": "Apple Silicon (1ª Gen)"
+    },
+    {
+        "patron": "m2",
+        "modelo": "Apple M2",
+        "nucleos": 8,
+        "gen": "Apple Silicon (2ª Gen)"
+    },
+    {
+        "patron": "m3",
+        "modelo": "Apple M3",
+        "nucleos": 8,
+        "gen": "Apple Silicon (3ª Gen)"
+    }
+]

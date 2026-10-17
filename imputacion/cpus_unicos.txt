@@ -1,0 +1,204 @@
+i3-10110u
+i3-1115g
+i3-1125g
+i3-1215u
+i3-1315u
+i5-10210u
+i5-10300h
+i5-10310u
+i5-1035g
+i5-10400h
+i5-11300h
+i5-11320h
+i5-1135g
+i5-11400h
+i5-1145g
+i5-1155g
+i5-1230u
+i5-1235u
+i5-1240p
+i5-12450h
+i5-12450hx
+i5-1245u
+i5-12500h
+i5-12700h
+i5-1334u
+i5-1335u
+i5-13420
+i5-13420h
+i5-1345u
+i5-1355u
+i5-14450hx
+i5-6200u
+i5-6300u
+i5-7200
+i5-7200u
+i5-7300u
+i5-8250u
+i5-8265u
+i5-8350u
+i5-8365u
+i5-9300h
+i5-9400h
+i512450h
+i51334u
+i7-10510u
+i7-10610u
+i7-10750h
+i7-1075h
+i7-10850h
+i7-10875h
+i7-1165g
+i7-11800
+i7-11800h
+i7-11850h
+i7-1185g
+i7-1195g
+i7-12500h
+i7-1255u
+i7-12650h
+i7-1265u
+i7-12700h
+i7-12800h
+i7-1355
+i7-1355u
+i7-13620h
+i7-1365
+i7-13700h
+i7-13700hx
+i7-13800h
+i7-14650hx
+i7-6700
+i7-7600u
+i7-8500u
+i7-8550u
+i7-8565u
+i7-8650u
+i7-8665u
+i7-8750h
+i7-9750h
+i713620h
+i9-11900h
+i9-12900h
+i9-13900h
+i9-13900hx
+i9-13980hx
+i9-14900
+i9-14900hx
+m1
+m1 
+m1 pro
+m2
+m2 
+m2  
+m3
+m3 
+m3 pro
+m4
+m4 
+n000
+n002
+n009
+n010
+n013
+n026
+n050
+n100
+n141
+n150
+n153
+n156
+n158
+n159
+n173
+n177
+n179
+n200
+n207
+n228
+n250
+n270
+n281
+n300
+n305
+n306
+n324
+n332
+n335
+n340
+n350
+n355
+n400
+n402
+n412
+n415
+n420
+n450
+n500
+n503
+n509
+n510
+n515
+n517
+n600
+n665
+n680
+ryzen 3 3250u
+ryzen 3 3350u
+ryzen 3 5300
+ryzen 3 5300u
+ryzen 3 7320u
+ryzen 3 7330u
+ryzen 3 7335u
+ryzen 5 3450u
+ryzen 5 3500u
+ryzen 5 3550h
+ryzen 5 4500
+ryzen 5 4500u
+ryzen 5 4600h
+ryzen 5 4650
+ryzen 5 5500u
+ryzen 5 5600h
+ryzen 5 5650u
+ryzen 5 6600h
+ryzen 5 7235hs
+ryzen 5 7430
+ryzen 5 7430u
+ryzen 5 7520u
+ryzen 5 7530u
+ryzen 5 7535hs
+ryzen 5 7535u
+ryzen 5 8540u
+ryzen 5 8645hs
+ryzen 7 3700
+ryzen 7 4700u
+ryzen 7 4800h
+ryzen 7 5700u
+ryzen 7 5800h
+ryzen 7 5825u
+ryzen 7 7435hs
+ryzen 7 7445hs
+ryzen 7 7730u
+ryzen 7 7735hs
+ryzen 7 7735u
+ryzen 7 7745hx
+ryzen 7 7750u
+ryzen 7 7840hs
+ryzen 7 8745
+ryzen 7 8745hs
+ryzen 7 8840h
+ryzen 7 8840hs
+ryzen 7 8840u
+ryzen 7 8845hs
+ryzen 9 6900hs
+ryzen 9 6900hx
+ryzen 9 7000
+ryzen 9 7940hs
+ryzen 9 8940hx
+ryzen 9 9955hx
+ryzen5 4650
+ryzen56600h
+ryzen7 5875
+ryzen7 7435hs
+ryzen7 7735hs
+ryzen78745hs

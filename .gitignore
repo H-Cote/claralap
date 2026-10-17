@@ -1,0 +1,27 @@
+claralap/
+# --- ARCHIVOS DE ENTORNO Y LLAVES SECRETAS ---
+.env
+.env.*
+*.env
+
+# --- PYTHON & VIRTUAL ENVS ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# --- JUPYTER NOTEBOOKS (Punto crítico de filtración) ---
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+Untitled*.ipynb
+
+# --- ARCHIVOS TEMPORALES Y DE EDITOR ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- ARCHIVOS O CARPETAS DE PRUEBA LOCAL ---
+*.log
